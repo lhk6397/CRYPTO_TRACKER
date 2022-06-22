@@ -5,6 +5,8 @@ import Coin from "./Coin";
 import Coins from "./Coins";
 import Price from "./Price";
 
+interface IRouterProps {}
+
 const Router = () => {
   return (
     <BrowserRouter>
