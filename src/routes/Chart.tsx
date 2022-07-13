@@ -1,4 +1,3 @@
-import React from "react";
 import { useQuery } from "react-query";
 import { useOutletContext } from "react-router-dom";
 import { fetchCoinHistory } from "../api";
@@ -11,13 +10,13 @@ interface ChartProps {
 }
 
 interface IHistoricalData {
-  time_open: number;
+  time_open: string;
   time_close: number;
-  open: string;
-  high: string;
-  low: string;
+  open: number;
+  high: number;
+  low: number;
   close: number;
-  volume: string;
+  volume: number;
   market_cap: number;
 }
 
@@ -31,66 +30,60 @@ const Chart = () => {
       refetchInterval: 10000,
     }
   );
+
   return (
     <div>
       {isLoading ? (
         "Loading chart..."
       ) : (
         <ApexChart
-          type="line"
+          type="candlestick"
           series={[
             {
-              name: "Price",
-              data: data?.map((price) => price.close) ?? [],
+              data: data?.map((price) => [
+                price.time_close * 1000,
+                price.open,
+                price.high,
+                price.low,
+                price.close,
+              ]) as [],
             },
           ]}
           options={{
             theme: {
-              mode: isDark ? "dark" : "light",
+              mode: "dark",
             },
             chart: {
-              height: 500,
+              type: "candlestick",
+              height: 350,
               width: 500,
               toolbar: {
                 show: false,
               },
               background: "transparent",
             },
-            grid: {
-              show: false,
-            },
             stroke: {
               curve: "smooth",
-              width: 3,
+              width: 2,
             },
             yaxis: {
               show: false,
             },
             xaxis: {
-              axisBorder: {
-                show: false,
-              },
-              axisTicks: {
-                show: false,
-              },
-              labels: {
-                show: false,
-                datetimeFormatter: { month: "mmm 'yy" },
-              },
               type: "datetime",
-              categories: data?.map((price) => price.time_close * 1000),
-            },
-            fill: {
-              type: "gradient",
-              gradient: {
-                gradientToColors: ["#2ecc71"],
-                stops: [0, 100],
+              categories: data?.map((price) => price.time_close),
+              labels: {
+                style: {
+                  colors: "#9c88ff",
+                },
               },
             },
-            colors: ["#3498db"],
-            tooltip: {
-              y: {
-                formatter: (value) => `$${value.toFixed(3)}`,
+            plotOptions: {
+              candlestick: {
+                colors: {
+                  upward: "#3C90EB",
+                  downward: "#DF7D46",
+                },
               },
             },
           }}

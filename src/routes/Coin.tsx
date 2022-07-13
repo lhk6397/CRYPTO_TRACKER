@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Outlet, useLocation, useParams } from "react-router-dom";
 import { useMatch } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -13,6 +13,7 @@ const Container = styled.div`
 `;
 
 const Header = styled.header`
+  position: relative;
   height: 10vh;
   display: flex;
   justify-content: center;
@@ -22,6 +23,32 @@ const Header = styled.header`
 const Title = styled.h1`
   font-size: 48px;
   color: ${(props) => props.theme.accentColor};
+`;
+
+const colorAnimation = (textColor: string, accentColor: string) => keyframes`
+  0% {
+    fill: ${textColor};
+  }
+  50%{
+    fill: ${accentColor};
+  }
+  100%{
+    fill: ${textColor};
+  }
+`;
+
+const BackBtn = styled.svg`
+  position: absolute;
+  right: 0;
+  fill: ${(props) => props.theme.textColor};
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  &:hover {
+    animation: ${(props) =>
+        colorAnimation(props.theme.textColor, props.theme.accentColor)}
+      2s infinite ease-in-out;
+  }
 `;
 
 const Loader = styled.span`
@@ -156,22 +183,6 @@ const Coin = () => {
   // "string | undefined' 형식의 인수는 'QueryKey' 형식의 매개 변수에 할당될 수 없습니다."와 같은 오류가 발생
   // !=> 확장 할당 어션셜로 값이 무조건 할당되어있다고 컴파일러에게 전달해 값이 없어도 변수를 사용할 수 있게 한다
 
-  /*  const [loading, setLoading] = useState(true);
-  const [info, setInfo] = useState<IInfoData>();
-  const [priceInfo, setPriceInfo] = useState<IPriceData>();
-  useEffect(() => {
-    (async () => {
-      const infoData = await (
-        await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-      ).json();
-      const priceData = await (
-        await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-      ).json();
-      setInfo(infoData);
-      setPriceInfo(priceData);
-      setLoading(false);
-    })();
-  }, [coinId]); */
   const loading = infoLoading || tickersLoading;
   return (
     <Container>
@@ -184,6 +195,11 @@ const Coin = () => {
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>
+        <Link to={`/`}>
+          <BackBtn xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+            <path d="M575.8 255.5C575.8 273.5 560.8 287.6 543.8 287.6H511.8L512.5 447.7C512.5 450.5 512.3 453.1 512 455.8V472C512 494.1 494.1 512 472 512H456C454.9 512 453.8 511.1 452.7 511.9C451.3 511.1 449.9 512 448.5 512H392C369.9 512 352 494.1 352 472V384C352 366.3 337.7 352 320 352H256C238.3 352 224 366.3 224 384V472C224 494.1 206.1 512 184 512H128.1C126.6 512 125.1 511.9 123.6 511.8C122.4 511.9 121.2 512 120 512H104C81.91 512 64 494.1 64 472V360C64 359.1 64.03 358.1 64.09 357.2V287.6H32.05C14.02 287.6 0 273.5 0 255.5C0 246.5 3.004 238.5 10.01 231.5L266.4 8.016C273.4 1.002 281.4 0 288.4 0C295.4 0 303.4 2.004 309.5 7.014L564.8 231.5C572.8 238.5 576.9 246.5 575.8 255.5L575.8 255.5z" />
+          </BackBtn>
+        </Link>
       </Header>
       {loading ? (
         <Loader>Loading...</Loader>
