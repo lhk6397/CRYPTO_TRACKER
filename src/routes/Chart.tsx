@@ -51,7 +51,7 @@ const Chart = () => {
           ]}
           options={{
             theme: {
-              mode: "dark",
+              mode: isDark ? "dark" : "light",
             },
             chart: {
               type: "candlestick",
@@ -71,7 +71,7 @@ const Chart = () => {
             },
             xaxis: {
               type: "datetime",
-              categories: data?.map((price) => price.time_close),
+              categories: data?.map((price) => price.time_close * 1000),
               labels: {
                 style: {
                   colors: "#9c88ff",
